@@ -1,0 +1,82 @@
+$ deadlock
+=== Test 1: detection, deadlocked matrix ===
+  Available: 0 0 0 
+  Proc  Allocation  Request
+  P0    0 1 0       0 0 0 
+  P1    2 0 0       2 0 2 
+  P2    3 0 3       0 0 1 
+  P3    2 1 1       1 0 0 
+  P4    0 0 2       0 0 2 
+  P0 request satisfiable -> finishes, Work = 0 1 0 
+  RESULT: DEADLOCK among { P1 P2 P3 P4 }
+
+=== Test 2: detection, safe matrix ===
+  Available: 0 0 0 
+  Proc  Allocation  Request
+  P0    0 1 0       0 0 0 
+  P1    2 0 0       2 0 2 
+  P2    3 0 3       0 0 0 
+  P3    2 1 1       1 0 0 
+  P4    0 0 2       0 0 2 
+  P0 request satisfiable -> finishes, Work = 0 1 0 
+  P2 request satisfiable -> finishes, Work = 3 1 3 
+  P3 request satisfiable -> finishes, Work = 5 2 4 
+  P4 request satisfiable -> finishes, Work = 5 2 6 
+  P1 request satisfiable -> finishes, Work = 7 2 6 
+  RESULT: no deadlock
+
+=== Test 3: Banker's avoidance, safe -> unsafe after request ===
+  Available: 3 3 2 
+  Proc  Allocation  Need
+  P0    0 1 0       7 4 3 
+  P1    2 0 0       1 2 2 
+  P2    3 0 2       6 0 0 
+  P3    2 1 1       0 1 1 
+  P4    0 0 2       4 3 1 
+    P1 Need <= Work -> runs, Work = 5 3 2 
+    P3 Need <= Work -> runs, Work = 7 4 3 
+    P4 Need <= Work -> runs, Work = 7 4 5 
+    P0 Need <= Work -> runs, Work = 7 5 5 
+    P2 Need <= Work -> runs, Work = 10 5 7 
+  SAFE, sequence: P1 P3 P4 P0 P2 
+
+  Request P1 ( 1 0 2 )
+  Available: 2 3 0 
+  Proc  Allocation  Need
+  P0    0 1 0       7 4 3 
+  P1    3 0 2       0 2 0 
+  P2    3 0 2       6 0 0 
+  P3    2 1 1       0 1 1 
+  P4    0 0 2       4 3 1 
+    P1 Need <= Work -> runs, Work = 5 3 2 
+    P3 Need <= Work -> runs, Work = 7 4 3 
+    P4 Need <= Work -> runs, Work = 7 4 5 
+    P0 Need <= Work -> runs, Work = 7 5 5 
+    P2 Need <= Work -> runs, Work = 10 5 7 
+  GRANTED: state stays safe, sequence: P1 P3 P4 P0 P2 
+
+  Request P0 ( 0 2 0 )
+  Available: 2 1 0 
+  Proc  Allocation  Need
+  P0    0 3 0       7 2 3 
+  P1    3 0 2       0 2 0 
+  P2    3 0 2       6 0 0 
+  P3    2 1 1       0 1 1 
+  P4    0 0 2       4 3 1 
+    no remaining process has Need <= Work = 2 1 0 -> stuck
+  DENIED: granting would make the state UNSAFE, rolled back
+
+=== Test 4: real deadlock with xv6 processes and pipes ===
+  A (pid 4) holds pipe1 write end, blocked reading pipe2
+  B (pid 5) holds pipe2 write end, blocked reading pipe1
+  resources: R0 = pipe1, R1 = pipe2; P0 = A, P1 = B
+  Available: 0 0 
+  Proc  Allocation  Request
+  P0    1 0       0 1 
+  P1    0 1       1 0 
+  RESULT: DEADLOCK among { P0 P1 }
+
+  circular wait: A -> pipe2 (held by B) -> B -> pipe1 (held by A) -> A
+  reaped pid 4, exit status -1 (killed while still blocked)
+  reaped pid 5, exit status -1 (killed while still blocked)
+$

@@ -1,0 +1,15 @@
+$ threadtest
+threadtest: 3 threads x 100000 increments, no synchronization
+main pid 3, &counter = 0x0000000000001004
+clone -> thread 0 pid 4
+clone -> thread 1 pid 5
+clone -> thread 2 pid 6
+join  -> pid 4
+join  -> pid 5
+join  -> pid 6
+thread 0 wrote seen[0] = 4 into shared memory
+thread 1 wrote seen[1] = 5 into shared memory
+thread 2 wrote seen[2] = 6 into shared memory
+final counter = 102005 (expected 300000)
+race condition: 197995 increments lost
+$

@@ -1,0 +1,50 @@
+$ synctest
+synctest: 3 threads x 100000 increments
+[no synchronization] final counter = 104107 / 300000  lost = 195893  ticks = 1
+[with semaphore]    final counter = 300000 / 300000  lost = 0  ticks = 226
+before: 104107   after: 300000   PASS: counter exact
+$ prodcons
+prodcons: buffer 5, 20 items, consumer slow first half, producer slow second half
+produced 1  slot 0  count 1
+produced 2  slot 1  count 2
+produced 3  slot 2  count 3
+produced 4  slot 3  count 4
+produced 5  slot 4  count 5
+               consumed 1  slot 0  count 4
+produced 6  slot 0  count 5
+               consumed 2  slot 1  count 4
+produced 7  slot 1  count 5
+               consumed 3  slot 2  count 4
+produced 8  slot 2  count 5
+               consumed 4  slot 3  count 4
+produced 9  slot 3  count 5
+               consumed 5  slot 4  count 4
+produced 10  slot 4  count 5
+               consumed 6  slot 0  count 4
+produced 11  slot 0  count 5
+               consumed 7  slot 1  count 4
+produced 12  slot 1  count 5
+               consumed 8  slot 2  count 4
+produced 13  slot 2  count 5
+               consumed 9  slot 3  count 4
+produced 14  slot 3  count 5
+               consumed 10  slot 4  count 4
+               consumed 11  slot 0  count 3
+               consumed 12  slot 1  count 2
+               consumed 13  slot 2  count 1
+               consumed 14  slot 3  count 0
+produced 15  slot 4  count 1
+               consumed 15  slot 4  count 0
+produced 16  slot 0  count 1
+               consumed 16  slot 0  count 0
+produced 17  slot 1  count 1
+               consumed 17  slot 1  count 0
+produced 18  slot 2  count 1
+               consumed 18  slot 2  count 0
+produced 19  slot 3  count 1
+               consumed 19  slot 3  count 0
+produced 20  slot 4  count 1
+               consumed 20  slot 4  count 0
+max occupancy 5 / 5, final count 0, overflow/underflow errors 0
+PASS
+$

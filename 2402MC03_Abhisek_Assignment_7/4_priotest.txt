@@ -1,0 +1,56 @@
+$ priotest
+priotest: 4 CPU-bound workers, 6000 units each, aging every 30 ticks
+forked pid 4 with priority 2
+forked pid 5 with priority 6
+forked pid 6 with priority 12
+forked pid 7 with priority 20
+t=25  snapshot:  pid4=2  pid5=6  pid6=12  pid7=20
+t=31  pid 7 aged: priority 20 -> 19 (waited > 30 ticks)
+t=50  snapshot:  pid4=2  pid5=5  pid6=11  pid7=19
+t=62  pid 7 aged: priority 19 -> 18 (waited > 30 ticks)
+t=75  snapshot:  pid4=2  pid5=4  pid6=10  pid7=18
+t=93  pid 7 aged: priority 18 -> 17 (waited > 30 ticks)
+t=100  snapshot:  pid4=2  pid5=3  pid6=9  pid7=17
+t=124  pid 7 aged: priority 17 -> 16 (waited > 30 ticks)
+t=125  snapshot:  pid4=2  pid5=2  pid6=8  pid7=16
+t=141  pid 4 (initial prio 2) FINISHED
+t=150  snapshot:  pid4=0  pid5=2  pid6=8  pid7=16
+t=155  pid 7 aged: priority 16 -> 15 (waited > 30 ticks)
+t=175  snapshot:  pid4=0  pid5=2  pid6=7  pid7=15
+t=186  pid 7 aged: priority 15 -> 14 (waited > 30 ticks)
+t=200  snapshot:  pid4=0  pid5=2  pid6=6  pid7=14
+t=217  pid 7 aged: priority 14 -> 13 (waited > 30 ticks)
+t=225  snapshot:  pid4=0  pid5=2  pid6=5  pid7=13
+t=248  pid 7 aged: priority 13 -> 12 (waited > 30 ticks)
+t=250  snapshot:  pid4=0  pid5=2  pid6=4  pid7=12
+t=275  snapshot:  pid4=0  pid5=2  pid6=4  pid7=12
+t=279  pid 7 aged: priority 12 -> 11 (waited > 30 ticks)
+t=289  pid 5 (initial prio 6) FINISHED
+t=300  snapshot:  pid4=0  pid5=0  pid6=3  pid7=11
+t=310  pid 7 aged: priority 11 -> 10 (waited > 30 ticks)
+t=325  snapshot:  pid4=0  pid5=0  pid6=3  pid7=10
+t=341  pid 7 aged: priority 10 -> 9 (waited > 30 ticks)
+t=350  snapshot:  pid4=0  pid5=0  pid6=3  pid7=9
+t=372  pid 7 aged: priority 9 -> 8 (waited > 30 ticks)
+t=375  snapshot:  pid4=0  pid5=0  pid6=3  pid7=8
+t=400  snapshot:  pid4=0  pid5=0  pid6=3  pid7=8
+t=403  pid 7 aged: priority 8 -> 7 (waited > 30 ticks)
+t=425  snapshot:  pid4=0  pid5=0  pid6=3  pid7=7
+t=434  pid 7 aged: priority 7 -> 6 (waited > 30 ticks)
+t=450  snapshot:  pid4=0  pid5=0  pid6=3  pid7=6
+t=452  pid 6 (initial prio 12) FINISHED
+t=475  snapshot:  pid4=0  pid5=0  pid6=0  pid7=6
+t=500  snapshot:  pid4=0  pid5=0  pid6=0  pid7=6
+t=525  snapshot:  pid4=0  pid5=0  pid6=0  pid7=6
+t=550  snapshot:  pid4=0  pid5=0  pid6=0  pid7=6
+t=575  snapshot:  pid4=0  pid5=0  pid6=0  pid7=6
+t=600  snapshot:  pid4=0  pid5=0  pid6=0  pid7=6
+t=607  pid 7 (initial prio 20) FINISHED
+
+order  pid  initial-prio  final-prio  completion-tick
+  1    4       2            2            141
+  2    5       6            2            289
+  3    6       12            3            452
+  4    7       20            6            607
+lowest-priority process (prio 20) completed at t=607: no starvation
+$
